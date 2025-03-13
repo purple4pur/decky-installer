@@ -10,12 +10,12 @@ then
     exit 1
 fi
 
-# check if github.com is reachable
-if ! curl -Is https://github.com | head -1 | grep 200 > /dev/null
-then
-    echo "Github appears to be unreachable, you may not be connected to the internet"
-    exit 1
-fi
+## check if github.com is reachable
+#if ! curl -Is https://github.com | head -1 | grep 200 > /dev/null
+#then
+#    echo "Github appears to be unreachable, you may not be connected to the internet"
+#    exit 1
+#fi
 
 echo "Installing Steam Deck Plugin Loader release..."
 
@@ -31,9 +31,11 @@ sudo -u $SUDO_USER touch "${USER_DIR}/.steam/steam/.cef-enable-remote-debugging"
 [ -d "${USER_DIR}/.var/app/com.valvesoftware.Steam/data/Steam/" ] && sudo -u $SUDO_USER touch "${USER_DIR}/.var/app/com.valvesoftware.Steam/data/Steam/.cef-enable-remote-debugging"
 
 # Download latest release and install it
-RELEASE=$(curl -s 'https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases' | jq -r "first(.[] | select(.prerelease == "false"))")
+RELEASE=$(curl -s 'https://api-github.quitw.org/repos/SteamDeckHomebrew/decky-loader/releases' | jq -r "first(.[] | select(.prerelease == "false"))")
 VERSION=$(jq -r '.tag_name' <<< ${RELEASE} )
 DOWNLOADURL=$(jq -r '.assets[].browser_download_url | select(endswith("PluginLoader"))' <<< ${RELEASE})
+DOWNLOADURL=$(echo "$DOWNLOADURL" | sed -e 's/github\.com/ghproxy.quitw.org/')
+echo "modified DOWNLOADURL: $DOWNLOADURL"
 
 printf "Installing version %s...\n" "${VERSION}"
 curl -L $DOWNLOADURL --output ${HOMEBREW_FOLDER}/services/PluginLoader
@@ -50,7 +52,7 @@ systemctl --user disable plugin_loader 2> /dev/null
 systemctl stop plugin_loader 2> /dev/null
 systemctl disable plugin_loader 2> /dev/null
 
-curl -L https://raw.githubusercontent.com/SteamDeckHomebrew/decky-loader/main/dist/plugin_loader-release.service  --output ${HOMEBREW_FOLDER}/services/plugin_loader-release.service
+curl -L https://raw-githubusercontent.quitw.org/SteamDeckHomebrew/decky-loader/main/dist/plugin_loader-release.service  --output ${HOMEBREW_FOLDER}/services/plugin_loader-release.service
 
 cat > "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" <<- EOM
 [Unit]
