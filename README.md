@@ -5,7 +5,7 @@ Installer for <a href="https://github.com/SteamDeckHomebrew/decky-loader">decky 
 
 ### Usage
 
-Install:
+Install/Update stable version:
 
 ```
 curl -L https://ghproxy.quitw.org/purple4pur/decky-installer/raw/refs/heads/main/cli/install_release.sh | sh
